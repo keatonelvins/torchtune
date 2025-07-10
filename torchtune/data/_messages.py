@@ -721,6 +721,7 @@ class OpenAIToMessages(Transform):
                 content = message["content"]
 
             eot = True
+            ipython = False
             if message["role"] in ["tool", "ipython"]:
                 # After tool responses, turn is not over, because assistant will interpret the tool response.
                 eot = False
@@ -731,11 +732,14 @@ class OpenAIToMessages(Transform):
                 has_next_message = i < len(messages) - 1
                 if has_next_message and messages[i + 1]["role"] in ["tool", "ipython"]:
                     eot = False
+                    ipython = True
+                
 
             updated_messages.append(
                 Message(
                     role=message["role"],
                     content=content,
+                    ipython=ipython,
                     eot=eot,
                 ),
             )
